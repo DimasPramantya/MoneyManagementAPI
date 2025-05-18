@@ -25,4 +25,5 @@ func InitUserRouter(rg *gin.RouterGroup, db *sql.DB, validator *validation.Valid
 	rg.POST("/register", userCtrl.Register)
 	rg.POST("/login", userCtrl.Login)
 	rg.GET("/profile", middleware.JwtMiddleware(),  userCtrl.GetUserProfile)
+	rg.PATCH("/balance", middleware.JwtMiddleware(), userCtrl.UpdateUserBalance)
 }

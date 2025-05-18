@@ -3,9 +3,9 @@ package service
 import (
 	"fmt"
 
+	"github.com/dimas-pramantya/money-management/dto"
 	"github.com/dimas-pramantya/money-management/internal/api/middleware"
 	"github.com/dimas-pramantya/money-management/internal/domain"
-	"github.com/dimas-pramantya/money-management/dto"
 	"github.com/dimas-pramantya/money-management/utils/helper"
 )
 
@@ -13,6 +13,25 @@ type UserService struct {
 	userRepo domain.UserRepository
 }
 
+func (u *UserService) UpdateBalance(id string, req dto.ReqUpdateUserBalanceDto) (*dto.ResUserDto, error) {
+	user, err := u.userRepo.FindById(id)
+	if err != nil {
+		return nil, domain.InternalServerError(fmt.Sprintf("Failed to find user with id %d", id), err)
+	}
+
+	if user == nil {
+		return nil, domain.NotFoundError(fmt.Sprintf("User with id %d not found.", id), nil)
+	}
+
+	user.Balance = req.Balance
+
+	updatedUser, err := u.userRepo.UpdateBalance(user)
+	if err != nil {
+		return nil, domain.InternalServerError("Failed to update user balance", err)
+	}
+
+	return mapUserToResUserDto(updatedUser), nil
+}
 
 func (u *UserService) FindById(id string) (*dto.ResUserDto, error) {
 	user, err := u.userRepo.FindById(id)
@@ -68,7 +87,7 @@ func (u *UserService) Login(req dto.LoginDto) (dto.ResLoginDto, error) {
 	}
 
 	res := dto.ResLoginDto{
-		Token: token,
+		Token:  token,
 		UserId: user.ID.String(),
 	}
 
@@ -112,7 +131,6 @@ func (u *UserService) Register(req dto.RegisterDto) (*dto.ResUserDto, error) {
 	return mapUserToResUserDto(user), nil
 }
 
-
 func (u *UserService) Update(id string, req dto.ReqUpdateUserDto) (*dto.ResUserDto, error) {
 	user, err := u.userRepo.FindById(id)
 	if err != nil {
@@ -134,7 +152,7 @@ func (u *UserService) Update(id string, req dto.ReqUpdateUserDto) (*dto.ResUserD
 	return mapUserToResUserDto(updatedUser), nil
 }
 
-func (u *UserService) UpdatePassword(id string, req dto.ReqUpdateUserPasswordDto) (error) {
+func (u *UserService) UpdatePassword(id string, req dto.ReqUpdateUserPasswordDto) error {
 	user, err := u.userRepo.FindById(id)
 	if err != nil {
 		return domain.InternalServerError(fmt.Sprintf("Failed to find user with id %d", id), err)
@@ -172,9 +190,10 @@ func NewUserService(userRepo domain.UserRepository) domain.UserUsecase {
 
 func mapUserToResUserDto(user *domain.User) *dto.ResUserDto {
 	return &dto.ResUserDto{
-		ID:       user.ID.String(),
-		Username: user.Username,
-		Email:    user.Email,
+		ID:        user.ID.String(),
+		Username:  user.Username,
+		Email:     user.Email,
+		Balance:  user.Balance,
 		CreatedAt: *helper.TimeToString(&user.CreatedAt),
 		UpdatedAt: helper.TimeToString(user.UpdatedAt),
 		CreatedBy: user.CreatedBy,

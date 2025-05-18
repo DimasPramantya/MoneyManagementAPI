@@ -12,6 +12,7 @@ type User struct {
 	Username string `json:"username"` 
 	Password string `json:"password"`
 	Email    string `json:"email"`
+	Balance int64 `json:"balance"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt *time.Time `json:"updated_at"`
 	CreatedBy string `json:"created_by"`
@@ -26,6 +27,7 @@ type UserRepository interface {
 	FindByEmail(email string) (*User, error)
 	UpdatePassword(user *User) (error)
 	FindByUsernameOrEmail(username string) (*User, error)
+	UpdateBalance(user *User) (*User, error)
 }
 
 type UserUsecase interface {
@@ -35,4 +37,5 @@ type UserUsecase interface {
 	Register(req RegisterDto) (*ResUserDto, error)
 	Update(id string, req ReqUpdateUserDto) (*ResUserDto, error)
 	UpdatePassword(id string, req ReqUpdateUserPasswordDto) (error)
+	UpdateBalance(id string, req ReqUpdateUserBalanceDto) (*ResUserDto, error)
 }

@@ -3,7 +3,7 @@
 
 CREATE TABLE transactions (
     id int PRIMARY KEY,
-    ammount DECIMAL(10, 2) NOT NULL,
+    ammount BIGINT NOT NULL,
     user_id uuid NOT NULL,
     transaction_category_id int NOT NULL,
     transaction_sub_category_id int NOT NULL,

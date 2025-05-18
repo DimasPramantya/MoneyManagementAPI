@@ -39,6 +39,13 @@ definitions:
     - password
     - username
     type: object
+  dto.ReqUpdateUserBalanceDto:
+    properties:
+      balance:
+        type: integer
+    required:
+    - balance
+    type: object
   dto.ResLoginDto:
     properties:
       token:
@@ -70,6 +77,32 @@ info:
   title: Money Management API
   version: "1.0"
 paths:
+  /users/balance:
+    patch:
+      description: Update user balance
+      parameters:
+      - description: Update User Balance Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ReqUpdateUserBalanceDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ResUserDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Update User Balance
+      tags:
+      - users
   /users/login:
     post:
       description: Login user

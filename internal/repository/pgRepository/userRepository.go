@@ -13,10 +13,23 @@ type userPgRepository struct {
 	db *sql.DB
 }
 
+func (u *userPgRepository) UpdateBalance(user *domain.User) (*domain.User, error) {
+	err := u.db.QueryRow(`UPDATE users SET balance = $1, updated_by = $2, updated_at = $3 WHERE id = $4 Returning balance, updated_at, updated_by`,
+		user.Balance, user.ID, time.Now(), user.ID).Scan(&user.Balance, &user.UpdatedAt, &user.UpdatedBy)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func (u *userPgRepository) FindByUsernameOrEmail(username string) (*domain.User, error) {
-	row := u.db.QueryRow(`SELECT id, username, email, password, created_at, created_by, updated_at, updated_by FROM users WHERE username = $1 OR email = $1`, username)
+	row := u.db.QueryRow(`
+		SELECT id, username, email, password, balance, created_at, 
+		created_by, updated_at, updated_by FROM users WHERE username = $1 OR email = $1
+	`, username)
 	user := &domain.User{}
-	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.CreatedBy, &user.UpdatedAt, &user.UpdatedBy)
+	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Balance, &user.CreatedAt, 
+		&user.CreatedBy, &user.UpdatedAt, &user.UpdatedBy)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
@@ -28,9 +41,13 @@ func (u *userPgRepository) FindByUsernameOrEmail(username string) (*domain.User,
 }
 
 func (u *userPgRepository) FindByEmail(email string) (*domain.User, error) {
-	row := u.db.QueryRow(`SELECT id, username, email, password, created_at, created_by, updated_at, updated_by FROM users WHERE email = $1`, email)
+	row := u.db.QueryRow(`
+		SELECT id, username, email, password, balance, created_at, 
+		created_by, updated_at, updated_by FROM users WHERE email = $1
+	`, email)
 	user := &domain.User{}
-	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.CreatedBy, &user.UpdatedAt, &user.UpdatedBy)
+	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Balance, 
+		&user.CreatedAt, &user.CreatedBy, &user.UpdatedAt, &user.UpdatedBy)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil

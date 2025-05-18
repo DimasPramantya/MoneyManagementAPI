@@ -112,3 +112,42 @@ func (uc *UserController) GetUserProfile(ctx *gin.Context) {
 		Code:    http.StatusOK,
 	})
 }
+
+// UpdateUserBalance godoc
+// @Summary     Update User Balance
+// @Description Update user balance
+// @Tags        users
+// @Param       request body dto.ReqUpdateUserBalanceDto true "Update User Balance Payload"
+// @Produce     json
+// @Success     200 {object} dto.ResUserDto
+// @Failure     400 {object} domain.CustomError
+// @Security    BearerAuth
+// @Router      /users/balance [patch]
+func (uc *UserController) UpdateUserBalance(ctx *gin.Context) {
+	userID, _ := ctx.Get("user_id")
+	if userID == nil {
+		err := domain.UnauthorizedError("Unauthorized", nil)
+		ctx.Error(err)
+		return
+	}
+
+	var req dto.ReqUpdateUserBalanceDto
+	err := uc.validator.ValidateRequest(ctx, &req)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	userIDStr, _ := userID.(string)
+	user, err := uc.UserUC.UpdateBalance(userIDStr, req)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.BaseResponse{
+		Message: "User balance updated successfully",
+		Data:    user,
+		Code:    http.StatusOK,
+	})
+}
