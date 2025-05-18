@@ -86,6 +86,210 @@ const docTemplate = `{
                 }
             }
         },
+        "/transaction-categories/sub-categories": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all transaction subcategories",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "Find All Transaction SubCategories",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID (optional)",
+                        "name": "categoryId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CustomError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new transaction subcategory",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "Create Transaction SubCategory",
+                "parameters": [
+                    {
+                        "description": "Create Transaction SubCategory Payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateTransactionSubCategoryDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CustomError"
+                        }
+                    }
+                }
+            }
+        },
+        "/transaction-categories/sub-categories/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a transaction subcategory by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "Find Transaction SubCategory by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Transaction SubCategory ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CustomError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update an existing transaction subcategory",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "Update Transaction SubCategory",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Transaction SubCategory ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Transaction SubCategory Payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateTransactionSubCategoryDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CustomError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a transaction subcategory",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "Delete Transaction SubCategory",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Transaction SubCategory ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.BaseResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CustomError"
+                        }
+                    }
+                }
+            }
+        },
         "/transaction-categories/{id}": {
             "get": {
                 "security": [
@@ -398,6 +602,21 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateTransactionSubCategoryDto": {
+            "type": "object",
+            "required": [
+                "category_id",
+                "name"
+            ],
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.LoginDto": {
             "type": "object",
             "required": [
@@ -489,6 +708,21 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateTransactionSubCategoryDto": {
+            "type": "object",
+            "required": [
+                "category_id",
+                "name"
+            ],
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 }

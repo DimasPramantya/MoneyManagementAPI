@@ -23,6 +23,16 @@ definitions:
     required:
     - name
     type: object
+  dto.CreateTransactionSubCategoryDto:
+    properties:
+      category_id:
+        type: integer
+      name:
+        type: string
+    required:
+    - category_id
+    - name
+    type: object
   dto.LoginDto:
     properties:
       password:
@@ -84,6 +94,16 @@ definitions:
       name:
         type: string
     required:
+    - name
+    type: object
+  dto.UpdateTransactionSubCategoryDto:
+    properties:
+      category_id:
+        type: integer
+      name:
+        type: string
+    required:
+    - category_id
     - name
     type: object
 info:
@@ -214,6 +234,134 @@ paths:
       security:
       - BearerAuth: []
       summary: Update Transaction Category
+      tags:
+      - category
+  /transaction-categories/sub-categories:
+    get:
+      description: Get all transaction subcategories
+      parameters:
+      - description: Category ID (optional)
+        in: query
+        name: categoryId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Find All Transaction SubCategories
+      tags:
+      - category
+    post:
+      description: Create a new transaction subcategory
+      parameters:
+      - description: Create Transaction SubCategory Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTransactionSubCategoryDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Create Transaction SubCategory
+      tags:
+      - category
+  /transaction-categories/sub-categories/{id}:
+    delete:
+      description: Delete a transaction subcategory
+      parameters:
+      - description: Transaction SubCategory ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Delete Transaction SubCategory
+      tags:
+      - category
+    get:
+      description: Get a transaction subcategory by ID
+      parameters:
+      - description: Transaction SubCategory ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Find Transaction SubCategory by ID
+      tags:
+      - category
+    put:
+      description: Update an existing transaction subcategory
+      parameters:
+      - description: Transaction SubCategory ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Transaction SubCategory Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateTransactionSubCategoryDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Update Transaction SubCategory
       tags:
       - category
   /users/balance:

@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -26,6 +25,8 @@ func JwtMiddleware() gin.HandlerFunc {
 			fmt.Println("Error getting token from header:", err)
 			err := UnauthorizedError("Unauthorized", nil)
 			c.Error(err)
+			c.Abort()
+			return
 		}
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -33,6 +34,7 @@ func JwtMiddleware() gin.HandlerFunc {
 				fmt.Println("Unexpected signing method:", token.Header["alg"])
 				err := UnauthorizedError("Unauthorized", nil)
 				c.Error(err)
+				c.Abort()
 			}
 			return []byte(secret), nil
 		})
@@ -41,6 +43,7 @@ func JwtMiddleware() gin.HandlerFunc {
 			fmt.Println("Error parsing token:", err)
 			err := UnauthorizedError("Unauthorized", nil)
 			c.Error(err)
+			c.Abort()
 			return
 		}
 
@@ -49,6 +52,7 @@ func JwtMiddleware() gin.HandlerFunc {
 			fmt.Println("Invalid token claims")
 			err := UnauthorizedError("Unauthorized", nil)
 			c.Error(err)
+			c.Abort()
 			return
 		}
 
@@ -63,13 +67,13 @@ func JwtMiddleware() gin.HandlerFunc {
 func GetJwtTokenFromHeader(c *gin.Context) (string, error) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
-		return "", errors.New("authorization header missing")
+		return "", UnauthorizedError("authorization header missing", nil)
 	}
 
 	// Expecting format: Bearer <token>
 	parts := strings.SplitN(authHeader, " ", 2)
 	if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
-		return "", errors.New("authorization header format must be Bearer {token}")
+		return "", UnauthorizedError("authorization header format must be Bearer {token}", nil)
 	}
 
 	return parts[1], nil
