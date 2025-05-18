@@ -16,6 +16,13 @@ definitions:
       message:
         type: string
     type: object
+  dto.CreateTransactionCategoryDto:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
   dto.LoginDto:
     properties:
       password:
@@ -55,6 +62,8 @@ definitions:
     type: object
   dto.ResUserDto:
     properties:
+      balance:
+        type: integer
       created_at:
         type: string
       created_by:
@@ -70,6 +79,13 @@ definitions:
       username:
         type: string
     type: object
+  dto.UpdateTransactionCategoryDto:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
 info:
   contact: {}
   description: API for money management, to track expense and income \n\nTo authorize,
@@ -77,6 +93,129 @@ info:
   title: Money Management API
   version: "1.0"
 paths:
+  /transaction-categories:
+    get:
+      description: Get all transaction categories for a user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Get Transaction Categories by User ID
+      tags:
+      - category
+    post:
+      description: Create a new transaction category
+      parameters:
+      - description: Create Transaction Category Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTransactionCategoryDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Create Transaction Category
+      tags:
+      - category
+  /transaction-categories/{id}:
+    delete:
+      description: Delete a transaction category
+      parameters:
+      - description: Transaction Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Delete Transaction Category
+      tags:
+      - category
+    get:
+      description: Get a transaction category by ID
+      parameters:
+      - description: Transaction Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Get Transaction Category by ID
+      tags:
+      - category
+    put:
+      description: Update an existing transaction category
+      parameters:
+      - description: Transaction Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Transaction Category Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateTransactionCategoryDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Update Transaction Category
+      tags:
+      - category
   /users/balance:
     patch:
       description: Update user balance
