@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"database/sql"
 	"time"
 
 	. "github.com/dimas-pramantya/money-management/dto"
@@ -28,6 +29,7 @@ type UserRepository interface {
 	UpdatePassword(user *User) (error)
 	FindByUsernameOrEmail(username string) (*User, error)
 	UpdateBalance(user *User) (*User, error)
+	UpdateBalanceTx(tx *sql.Tx, user *User) (*User, error)
 }
 
 type UserUsecase interface {

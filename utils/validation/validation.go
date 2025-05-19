@@ -34,6 +34,18 @@ func (v *Validator) ValidateRequest(ctx *gin.Context, req any) error {
 	return nil
 }
 
+func (v *Validator) ValidateQuery(ctx *gin.Context, req any) error {
+	if err := ctx.ShouldBindQuery(req); err != nil {
+		err := BadRequestError("Invalid request", []string{"Invalid Content-Type, expected application/json"})
+		ctx.Error(err)
+	}
+	if errs := v.Validate(req); errs != nil {
+		err := BadRequestError("Invalid request", errs)
+		ctx.Error(err)
+	}
+	return nil
+}
+
 func (v *Validator) Validate(i any) []string {
 	err := v.validator.Struct(i)
 	if err == nil {

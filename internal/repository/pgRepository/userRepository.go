@@ -13,6 +13,15 @@ type userPgRepository struct {
 	db *sql.DB
 }
 
+func (u *userPgRepository) UpdateBalanceTx(tx *sql.Tx, user *domain.User) (*domain.User, error) {
+	err := tx.QueryRow(`UPDATE users SET balance = $1, updated_by = $2, updated_at = $3 WHERE id = $4 Returning balance, updated_at, updated_by`,
+		user.Balance, user.ID, time.Now(), user.ID).Scan(&user.Balance, &user.UpdatedAt, &user.UpdatedBy)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func (u *userPgRepository) UpdateBalance(user *domain.User) (*domain.User, error) {
 	err := u.db.QueryRow(`UPDATE users SET balance = $1, updated_by = $2, updated_at = $3 WHERE id = $4 Returning balance, updated_at, updated_by`,
 		user.Balance, user.ID, time.Now(), user.ID).Scan(&user.Balance, &user.UpdatedAt, &user.UpdatedBy)
@@ -28,7 +37,7 @@ func (u *userPgRepository) FindByUsernameOrEmail(username string) (*domain.User,
 		created_by, updated_at, updated_by FROM users WHERE username = $1 OR email = $1
 	`, username)
 	user := &domain.User{}
-	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Balance, &user.CreatedAt, 
+	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Balance, &user.CreatedAt,
 		&user.CreatedBy, &user.UpdatedAt, &user.UpdatedBy)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -46,7 +55,7 @@ func (u *userPgRepository) FindByEmail(email string) (*domain.User, error) {
 		created_by, updated_at, updated_by FROM users WHERE email = $1
 	`, email)
 	user := &domain.User{}
-	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Balance, 
+	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Balance,
 		&user.CreatedAt, &user.CreatedBy, &user.UpdatedAt, &user.UpdatedBy)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -76,9 +85,9 @@ func (u *userPgRepository) Create(user *domain.User) (*domain.User, error) {
 }
 
 func (u *userPgRepository) FindById(id string) (*domain.User, error) {
-	row := u.db.QueryRow(`SELECT id, username, email, password, created_at, created_by, updated_at, updated_by FROM users WHERE id = $1`, id)
+	row := u.db.QueryRow(`SELECT id, username, email, password, balance, created_at, created_by, updated_at, updated_by FROM users WHERE id = $1`, id)
 	user := &domain.User{}
-	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.CreatedBy, &user.UpdatedAt, &user.UpdatedBy)
+	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Balance, &user.CreatedAt, &user.CreatedBy, &user.UpdatedAt, &user.UpdatedBy)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil

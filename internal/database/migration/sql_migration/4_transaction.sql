@@ -3,7 +3,7 @@ CREATE TYPE transaction_type_enum AS ENUM ('income', 'expense');
 -- +migrate StatementBegin
 
 CREATE TABLE transactions (
-    id int PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     ammount BIGINT NOT NULL,
     user_id uuid NOT NULL,
     transaction_category_id int NOT NULL,

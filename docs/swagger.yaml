@@ -23,6 +23,26 @@ definitions:
     required:
     - name
     type: object
+  dto.CreateTransactionDto:
+    properties:
+      amount:
+        type: integer
+      category_id:
+        type: integer
+      note:
+        type: string
+      sub_category_id:
+        type: integer
+      transaction_date:
+        type: string
+      transaction_type:
+        type: string
+    required:
+    - amount
+    - category_id
+    - transaction_date
+    - transaction_type
+    type: object
   dto.CreateTransactionSubCategoryDto:
     properties:
       category_id:
@@ -364,6 +384,83 @@ paths:
       summary: Update Transaction SubCategory
       tags:
       - category
+  /transactions:
+    get:
+      description: Get transactions with pagination
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Category ID
+        in: query
+        name: category_id
+        type: integer
+      - description: User ID
+        in: query
+        name: user_id
+        type: string
+      - description: Sub Category ID
+        in: query
+        name: sub_category_id
+        type: integer
+      - description: Start date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        type: string
+      - description: End date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        type: string
+      - description: Transaction type (income/expense)
+        in: query
+        name: transaction_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Get Transaction Paginated
+      tags:
+      - transaction
+    post:
+      description: Create a new transaction
+      parameters:
+      - description: Create Transaction Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTransactionDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.CustomError'
+      security:
+      - BearerAuth: []
+      summary: Create Transaction
+      tags:
+      - transaction
   /users/balance:
     patch:
       description: Update user balance

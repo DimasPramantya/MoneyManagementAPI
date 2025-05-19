@@ -6,12 +6,12 @@ type BaseResponse struct {
 	Data    interface{} `json:"data"`
 }
 
-type PaginationResponse struct {
-	TotalRecords    int         `json:"totalRecords"`
-	TotalPages      int         `json:"totalPages"`
-	CurrentPage     int         `json:"currentPage"`
-	Limit		   	int         `json:"limit"`
-	Records         interface{} `json:"records"`
-	NextPage        *int         `json:"nextPage"`
-	PreviousPage    *int         `json:"previousPage"`
+type PaginationResponse[T any] struct {
+	TotalRecords  int    `json:"totalRecords"`
+	TotalPages    int    `json:"totalPages"`
+	CurrentPage   int    `json:"currentPage"`
+	Limit         int    `json:"limit"`
+	Records       []T    `json:"records"`
+	NextPage      *int   `json:"nextPage"`
+	PreviousPage  *int   `json:"previousPage"`
 }

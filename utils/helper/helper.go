@@ -26,3 +26,27 @@ func TimeToString(t *time.Time) *string {
 	formattedTime := t.Format("2006-01-02 15:04:05")
 	return &formattedTime
 }
+
+func DateToString(t *time.Time) *string {
+	if t == nil {
+		return nil
+	}
+	formattedDate := t.Format("2006-01-02")
+	return &formattedDate
+}
+
+func StringToTime(s string) (*time.Time, error) {
+	t, err := time.Parse("2006-01-02 15:04:05", s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func StringToDate(s string) (*time.Time, error) {
+	t, err := time.Parse("2006-01-02", s)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}

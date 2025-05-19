@@ -16,4 +16,7 @@ func Init(r *gin.Engine, db *sql.DB) {
 
 	transactionCategoryRoute := api.Group("/transaction-categories")
 	InitCategoryRouter(transactionCategoryRoute, db, validator)
+
+	transactionRoute := api.Group("/transactions")
+	InitTransactionRouter(transactionRoute, db, validator)
 }
