@@ -84,8 +84,8 @@ func (uc *TransactionController) GetTransactionPaginated(ctx *gin.Context) {
 		StartDate:  nil,
 		EndDate:    nil,
 		TransactionType: nil,
-		Limit:	ctx.Query("limit"),
-		Page: 	ctx.Query("limit"),
+		Limit:	1,
+		Page: 	10,
 	}
 
 	userIDStr := ctx.MustGet("user_id").(string)
